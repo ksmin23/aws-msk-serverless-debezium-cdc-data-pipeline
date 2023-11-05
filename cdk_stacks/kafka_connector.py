@@ -150,7 +150,7 @@ class KafkaConnectorStack(Stack):
     rds_secret_name = rds_credentials.secret_name
 
     kafka_connect_vpc_security_group_ids = [sg_rds_client.security_group_id]
-    kafka_connect_vpc_subnets =[]
+    kafka_connect_vpc_subnets = []
     for vpc_config in msk_cluster_vpc_configs:
       kafka_connect_vpc_security_group_ids.extend(vpc_config.security_groups)
       kafka_connect_vpc_subnets.extend(vpc_config.subnet_ids)
