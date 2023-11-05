@@ -21,11 +21,13 @@ class AuroraMysqlStack(Stack):
   def __init__(self, scope: Construct, id: str, vpc, **kwargs) -> None:
     super().__init__(scope, id, **kwargs)
 
+    db_cluster_name = self.node.try_get_context('db_cluster_name')
+
     self.sg_mysql_client = aws_ec2.SecurityGroup(self, 'MySQLClientSG',
       vpc=vpc,
       allow_all_outbound=True,
       description='security group for mysql client',
-      security_group_name=f'aurora-mysql-client-sg-{self.stack_name}'
+      security_group_name=f'aurora-mysql-client-sg-{db_cluster_name}'
     )
     cdk.Tags.of(self.sg_mysql_client).add('Name', 'aurora-mysql-client-sg')
 
@@ -33,7 +35,7 @@ class AuroraMysqlStack(Stack):
       vpc=vpc,
       allow_all_outbound=True,
       description='security group for mysql',
-      security_group_name=f'aurora-mysql-server-sg-{self.stack_name}'
+      security_group_name=f'aurora-mysql-server-sg-{db_cluster_name}'
     )
     sg_mysql_server.add_ingress_rule(peer=self.sg_mysql_client, connection=aws_ec2.Port.tcp(3306),
       description='aurora-mysql-client-sg')
@@ -43,7 +45,7 @@ class AuroraMysqlStack(Stack):
 
     rds_subnet_group = aws_rds.SubnetGroup(self, 'MySQLSubnetGroup',
       description='subnet group for mysql',
-      subnet_group_name=f'{self.stack_name}-aurora-mysql',
+      subnet_group_name=f'{db_cluster_name}-aurora-mysql-subnet',
       vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS),
       vpc=vpc
     )
@@ -81,8 +83,6 @@ class AuroraMysqlStack(Stack):
         'init_connect': 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci'
       }
     )
-
-    db_cluster_name = self.node.try_get_context('db_cluster_name')
 
     #XXX: In order to exclude punctuations when generating a password
     # use aws_secretsmanager.Secret instead of aws_rds.DatabaseSecret.

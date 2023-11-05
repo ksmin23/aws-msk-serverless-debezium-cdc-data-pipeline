@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import random
-import string
+# -*- encoding: utf-8 -*-
+# vim: tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
 import boto3
 
@@ -13,8 +13,6 @@ from aws_cdk import (
   aws_logs,
 )
 from constructs import Construct
-
-random.seed(47)
 
 
 def get_kafka_booststrap_servers(kafka_cluster_name, region_name):
@@ -91,7 +89,7 @@ class KafkaConnectorStack(Stack):
     msk_connector_name = self.node.try_get_context('msk_connector_name')
 
     msk_connector_log_group = aws_logs.LogGroup(self, 'KafkaConnectorLogGroup',
-      log_group_name='/aws-msk-connector',
+      log_group_name=f'/aws-msk-connector/{msk_cluster_name}',
       retention=aws_logs.RetentionDays.THREE_DAYS,
       removal_policy=cdk.RemovalPolicy.DESTROY
     )
@@ -140,7 +138,7 @@ class KafkaConnectorStack(Stack):
 
     #XXX: For more information, see https://docs.aws.amazon.com/msk/latest/developerguide/create-iam-role.html
     msk_connector_execution_role = aws_iam.Role(self, 'MSKConnectorExecutionRole',
-      role_name='MSKConnectorExecutionRole-{suffix}'.format(suffix=''.join(random.choices((string.digits), k=5))),
+      role_name=f'MSKConnectorExecutionRole-{msk_cluster_name}',
       assumed_by=aws_iam.ServicePrincipal('kafkaconnect.amazonaws.com'),
       path='/',
       inline_policies={
@@ -207,9 +205,6 @@ class KafkaConnectorStack(Stack):
         apache_kafka_cluster=aws_kafkaconnect.CfnConnector.ApacheKafkaClusterProperty(
           bootstrap_servers=kafka_booststrap_servers,
           vpc=aws_kafkaconnect.CfnConnector.VpcProperty(
-            # security_groups=[sg_rds_client.security_group_id, sg_msk_client.security_group_id],
-            # #TODO: set msk_cluster_vpc_configs to subnets
-            # subnets=vpc.select_subnets(subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS).subnet_ids
             security_groups=kafka_connect_vpc_security_group_ids,
             subnets=kafka_connect_vpc_subnets
           )

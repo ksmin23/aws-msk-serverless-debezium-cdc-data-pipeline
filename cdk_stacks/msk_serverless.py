@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+
 import aws_cdk as cdk
 
 from aws_cdk import (
@@ -56,6 +59,7 @@ class MSKServerlessStack(Stack):
     self.msk_cluster_name = msk_serverless_cluster.cluster_name
     self.msk_cluster_arn = msk_serverless_cluster.attr_arn
     self.msk_cluster_vpc_configs = msk_serverless_cluster.vpc_configs
+
 
     cdk.CfnOutput(self, 'KafkaSecurityGroupID', value=sg_msk_cluster.security_group_id,
       export_name=f'{self.stack_name}-ClusterSecurityGroupID')

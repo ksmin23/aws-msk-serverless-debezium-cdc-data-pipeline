@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-
-# import random
-# import string
+# -*- encoding: utf-8 -*-
+# vim: tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
 import aws_cdk as cdk
 
@@ -13,33 +12,15 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-from aws_cdk.aws_kinesisfirehose import CfnDeliveryStream as cfn_firehose
-
-# random.seed(47)
-
-
-def get_msk_cluster_arn(msk_cluster_name, region_name):
-  import boto3
-
-  client = boto3.client('kafka', region_name=region_name)
-  response = client.list_clusters_v2(ClusterNameFilter=msk_cluster_name)
-  cluster_info_list = response['ClusterInfoList']
-  if not cluster_info_list:
-    cluster_arn = f"arn:aws:kafka:{cdk.Aws.REGION}:{cdk.Aws.ACCOUNT_ID}:cluster/{msk_cluster_name}/*"
-  else:
-    cluster_arn = cluster_info_list[0]['ClusterArn']
-  return cluster_arn
-
 
 class KinesisFirehoseStack(Stack):
 
-  def __init__(self, scope: Construct, construct_id: str, vpc, msk_cluster_name, s3_bucket, **kwargs) -> None:
+  def __init__(self, scope: Construct, construct_id: str, msk_cluster_name, msk_cluster_arn, s3_bucket, **kwargs) -> None:
     super().__init__(scope, construct_id, **kwargs)
 
     firehose_role_policy_doc = aws_iam.PolicyDocument()
     firehose_role_policy_doc.add_statements(aws_iam.PolicyStatement(**{
       "effect": aws_iam.Effect.ALLOW,
-      # "resources": [s3_bucket.bucket_arn, "{}/*".format(s3_bucket.bucket_arn)],
       "resources": [s3_bucket.bucket_arn, f"{s3_bucket.bucket_arn}/*"],
       "actions": ["s3:AbortMultipartUpload",
         "s3:GetBucketLocation",
@@ -49,8 +30,6 @@ class KinesisFirehoseStack(Stack):
         "s3:PutObject"]
     }))
 
-    msk_cluster_arn = get_msk_cluster_arn(msk_cluster_name, vpc.env.region)
-    # msk_cluster_name = cdk.Arn.extract_resource_name(msk_cluster_arn, 'cluster')
     firehose_delivery_stream_name = f"{msk_cluster_name}-to-s3"
     firehose_log_group_name = f"/aws/kinesisfirehose/{firehose_delivery_stream_name}"
     firehose_role_policy_doc.add_statements(aws_iam.PolicyStatement(
@@ -105,21 +84,7 @@ class KinesisFirehoseStack(Stack):
     kafka_topic_name = firehose_config['topic_name']
     firehose_buffering_hints = firehose_config['buffering_hints']
 
-    # s3_dest_config = cfn_firehose.S3DestinationConfigurationProperty(
-    #   bucket_arn=s3_bucket.bucket_arn,
-    #   role_arn=firehose_role.role_arn,
-    #   buffering_hints=firehose_buffering_hints,
-    #   cloud_watch_logging_options={
-    #     "enabled": True,
-    #     "logGroupName": firehose_log_group_name,
-    #     "logStreamName": "DestinationDelivery"
-    #   },
-    #   compression_format="UNCOMPRESSED", # [GZIP | HADOOP_SNAPPY | Snappy | UNCOMPRESSED | ZIP]
-    #   error_output_prefix="error-json/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/!{firehose:error-output-type}",
-    #   prefix="json-data/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/"
-    # )
-
-    extended_s3_dest_config = cfn_firehose.ExtendedS3DestinationConfigurationProperty(
+    extended_s3_dest_config = aws_kinesisfirehose.CfnDeliveryStream.ExtendedS3DestinationConfigurationProperty(
       bucket_arn=s3_bucket.bucket_arn,
       role_arn=firehose_role.role_arn,
       buffering_hints=firehose_buffering_hints,
@@ -150,7 +115,6 @@ class KinesisFirehoseStack(Stack):
         msk_cluster_arn=msk_cluster_arn,
         topic_name=kafka_topic_name
       ),
-      # s3_destination_configuration=s3_dest_config,
       extended_s3_destination_configuration=extended_s3_dest_config
     )
 
