@@ -16,14 +16,14 @@ from constructs import Construct
 
 
 def get_kafka_booststrap_servers(kafka_cluster_name, region_name):
-  msk_client = boto3.client('kafka', region_name=region_name)
-  response = msk_client.list_clusters_v2(ClusterNameFilter=kafka_cluster_name)
-  msk_cluster_info_list = response['ClusterInfoList']
-  if not msk_cluster_info_list:
+  client = boto3.client('kafka', region_name=region_name)
+  response = client.list_clusters_v2(ClusterNameFilter=kafka_cluster_name)
+  cluster_info_list = response['ClusterInfoList']
+  if not cluster_info_list:
     kafka_bootstrap_servers = "localhost:9094"
   else:
-    msk_cluster_arn = msk_cluster_info_list[0]['ClusterArn']
-    msk_brokers = msk_client.get_bootstrap_brokers(ClusterArn=msk_cluster_arn)
+    msk_cluster_arn = cluster_info_list[0]['ClusterArn']
+    msk_brokers = client.get_bootstrap_brokers(ClusterArn=msk_cluster_arn)
     kafka_bootstrap_servers = msk_brokers['BootstrapBrokerStringSaslIam']
     assert kafka_bootstrap_servers
 
