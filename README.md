@@ -538,20 +538,22 @@ Enjoy!
     topic.creation.default.replication.factor=-1
     ```
  * [Connect using the EC2 Instance Connect CLI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-methods.html#ec2-instance-connect-connecting-ec2-cli)
-   <pre>
-   $ sudo pip install ec2instanceconnectcli
-   $ mssh ec2-user@i-001234a4bf70dec41EXAMPLE # ec2-instance-id
-   </pre>
-   ```
-   $ msftp ec2-user@i-001234a4bf70dec41EXAMPLE
-   Connected to 44.211.52.192.
-   sftp> put jcustenborder-kafka-config-provider-aws-0.1.2.zip
-   Uploading jcustenborder-kafka-config-provider-aws-0.1.2.zip to /home/ec2-user/jcustenborder-kafka-config-provider-aws-0.1.2.zip
-   jcustenborder-kafka-config-provider-aws-0.1.2.zip                                                                                      100% 7840KB   2.4MB/s   00:03
-   sftp> ls
-   jcustenborder-kafka-config-provider-aws-0.1.2.zip
-   sftp> exit
-   ```
+   * mssh
+     <pre>
+     $ sudo pip install ec2instanceconnectcli
+     $ mssh ec2-user@i-001234a4bf70dec41EXAMPLE # ec2-instance-id
+     </pre>
+   * msftp
+     ```
+     $ msftp ec2-user@i-001234a4bf70dec41EXAMPLE
+     Connected to 44.211.52.192.
+     sftp> put jcustenborder-kafka-config-provider-aws-0.1.2.zip
+     Uploading jcustenborder-kafka-config-provider-aws-0.1.2.zip to /home/ec2-user/jcustenborder-kafka-config-provider-aws-0.1.2.zip
+     jcustenborder-kafka-config-provider-aws-0.1.2.zip                                                                                      100% 7840KB   2.4MB/s   00:03
+     sftp> ls
+     jcustenborder-kafka-config-provider-aws-0.1.2.zip
+     sftp> exit
+     ```
 
 ## Troubleshooting
 
