@@ -525,7 +525,7 @@ Enjoy!
  * [Build an end-to-end change data capture with Amazon MSK Connect and AWS Glue Schema Registry (2023-03-08)](https://aws.amazon.com/blogs/big-data/build-an-end-to-end-change-data-capture-with-amazon-msk-connect-and-aws-glue-schema-registry/)
  * [(Debezium Blog) Streaming MySQL Data Changes to Amazon Kinesis (2018-08-30)](https://debezium.io/blog/2018/08/30/streaming-mysql-data-changes-into-kinesis/)
  * [(AWS:rePost) How do I turn on binary logging for my Amazon Aurora MySQL-Compatible cluster?](https://repost.aws/knowledge-center/enable-binary-logging-aurora)
-
+ * [Amazon MSK Labs - Tutorial](https://catalog.workshops.aws/msk-labs/en-US)
 
  * [Amazon Managed Streaming for Apache Kafka - Custom MSK configurations](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)
     ```
