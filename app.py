@@ -76,15 +76,4 @@ firehose_stack = KinesisFirehoseStack(app, 'FirehosefromMSKtoS3Stack',
 )
 firehose_stack.add_dependency(s3_stack)
 
-# msk_connector_stack = KafkaConnectorStack(app, 'KafkaConnectorStack',
-#   vpc_stack.vpc,
-#   aurora_mysql_stack.db_hostname,
-#   aurora_mysql_stack.sg_mysql_client,
-#   aurora_mysql_stack.rds_credentials,
-#   msk_stack.msk_cluster_name,
-#   msk_stack.msk_cluster_vpc_configs,
-#   env=AWS_ENV
-# )
-# msk_connector_stack.add_dependency(firehose_stack)
-
 app.synth()
