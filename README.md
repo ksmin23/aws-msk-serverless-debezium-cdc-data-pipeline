@@ -522,6 +522,11 @@ Enjoy!
    * [Amazon MSK - Debezium source connector with configuration provider](https://docs.aws.amazon.com/msk/latest/developerguide/mkc-debeziumsource-connector-example.html)
  * [Amazon MSK Introduces Managed Data Delivery from Apache Kafka to Your Data Lake (2023-09-27)](https://aws.amazon.com/blogs/aws/amazon-msk-introduces-managed-data-delivery-from-apache-kafka-to-your-data-lake/)
  * [MSK -> Kinesis Data Streams (or Firehose) with Kafka-Kinesis-Connector](https://aws.amazon.com/ko/premiumsupport/knowledge-center/kinesis-kafka-connector-msk/) - How do I connect to my Amazon MSK cluster using the Kafka-Kinesis-Connector?
+ * [Amazon MSK multi-VPC private connectivity in a single Region](https://docs.aws.amazon.com/msk/latest/developerguide/aws-access-mult-vpc.html)
+   * **Requirements and limitations for multi-VPC private connectivity**
+     * Multi-VPC private connectivity is supported only on Apache Kafka 2.7.1 or higher. Make sure that any clients that you use with the MSK cluster are running Apache Kafka versions that are compatible with the cluster.
+     * Multi-VPC private connectivity supports auth types IAM, TLS and SASL/SCRAM. Unauthenticated clusters can't use multi-VPC private connectivity.
+     * Multi-VPC private connectivity doesn’t support the t3.small instance type.
  * [Build an end-to-end change data capture with Amazon MSK Connect and AWS Glue Schema Registry (2023-03-08)](https://aws.amazon.com/blogs/big-data/build-an-end-to-end-change-data-capture-with-amazon-msk-connect-and-aws-glue-schema-registry/)
  * [(Debezium Blog) Streaming MySQL Data Changes to Amazon Kinesis (2018-08-30)](https://debezium.io/blog/2018/08/30/streaming-mysql-data-changes-into-kinesis/)
  * [(AWS:rePost) How do I turn on binary logging for my Amazon Aurora MySQL-Compatible cluster?](https://repost.aws/knowledge-center/enable-binary-logging-aurora)
